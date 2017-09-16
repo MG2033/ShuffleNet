@@ -173,13 +173,10 @@ def depthwise_conv2d(name, x, w=None, kernel_size=(3, 3), padding='SAME', stride
 # Shufflenet unit methods
 
 def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, num_filters=16, stride=(1, 1),
-                    is_training=True, fusion='add'):
+                    l2_strength=0.0, bias=0.0, batchnorm_enabled=True, is_training=True, fusion='add'):
     # Paper parameters. If you want to change them feel free to pass them as method parameters.
     padding = 'SAME'
-    l2_strength = 0.0
-    bias = 0.0
     activation = tf.nn.relu
-    batchnorm_enabled = True
 
     with tf.variable_scope(name) as scope:
         residual = x
@@ -333,7 +330,7 @@ def flatten(x):
 ############################################################################################################
 # Pooling Methods
 
-def max_pool_2d(x, size=(2, 2), name='pooling'):
+def max_pool_2d(x, size=(2, 2), stride=(2, 2), name='pooling'):
     """
     Max pooling 2D Wrapper
     :param x: (tf.tensor) The input to the layer (N,H,W,C).
@@ -342,7 +339,8 @@ def max_pool_2d(x, size=(2, 2), name='pooling'):
     :return: The output is the same input but halfed in both width and height (N,H/2,W/2,C).
     """
     size_x, size_y = size
-    return tf.nn.max_pool(x, ksize=[1, size_x, size_y, 1], strides=[1, size_x, size_y, 1], padding='VALID',
+    stride_x, stride_y = stride
+    return tf.nn.max_pool(x, ksize=[1, size_x, size_y, 1], strides=[1, stride_x, stride_y, 1], padding='VALID',
                           name=name)
 
 
