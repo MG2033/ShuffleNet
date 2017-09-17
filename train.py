@@ -129,7 +129,9 @@ class Train:
             if cur_epoch % self.args.test_every == 0:
                 self.test()
 
-    print("Training Finished")
+        print("Final test!")
+        self.test()
+        print("Training Finished")
 
     def test(self):
         num_iterations = self.args.test_data_size // self.args.batch_size
