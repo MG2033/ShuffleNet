@@ -3,14 +3,16 @@ from layers import shufflenet_unit, conv2d, max_pool_2d, avg_pool_2d, dense, fla
 
 
 class ShuffleNet:
+    """ShuffleNet is implemented here!"""
+
     def __init__(self, args):
         self.args = args
-        self.X_input = None
+        self.X = None
         self.y = None
         self.logits = None
         self.is_training = None
         self.loss = None
-        self.optimizer = None
+        self.train_op = None
         self.accuracy = None
         self.y_out_argmax = None
 
@@ -24,8 +26,8 @@ class ShuffleNet:
     def __init_input(self):
         with tf.variable_scope('input'):
             # Input images
-            self.X_input = tf.placeholder(tf.float32,
-                                          [None, self.args.img_height, self.args.img_width,
+            self.X = tf.placeholder(tf.float32,
+                                    [None, self.args.img_height, self.args.img_width,
                                            self.args.num_channels])
             # Classification supervision, it's an argmax. Feel free to change it to one-hot,
             # but don't forget to change the loss from sparse as well
@@ -59,14 +61,14 @@ class ShuffleNet:
     def __init_output(self):
         with tf.variable_scope('output'):
             self.loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logits, labels=self.y, name='loss')
-            self.optimizer = tf.train.AdamOptimizer(learning_rate=self.args.learning_rate).minimize(self.loss)
+            self.train_op = tf.train.AdamOptimizer(learning_rate=self.args.learning_rate).minimize(self.loss)
             self.y_out_argmax = tf.arg_max(tf.nn.softmax(self.logits), output_type=tf.int32)
             self.accuracy = tf.reduce_mean(tf.reduce_mean(tf.cast(tf.equal(self.y, self.y_out_argmax), tf.float32)))
 
     def __build(self):
         self.__init_global_epoch()
         self.__init_input()
-        conv1 = conv2d('conv1', x=self.X_input, w=None, num_filters=self.output_channels['conv1'], kernel_size=(3, 3),
+        conv1 = conv2d('conv1', x=self.X, w=None, num_filters=self.output_channels['conv1'], kernel_size=(3, 3),
                        stride=(2, 2), l2_strength=self.args.l2_strength, bias=self.args.bias,
                        batchnorm_enabled=self.args.batchnorm_enabled, is_training=self.is_training)
         max_pool = max_pool_2d(conv1, size=(3, 3), stride=(2, 2), name='max_pool')
@@ -89,3 +91,13 @@ class ShuffleNet:
             self.global_epoch_tensor = tf.Variable(-1, trainable=False, name='global_epoch')
             self.global_epoch_input = tf.placeholder('int32', None, name='global_epoch_input')
             self.global_epoch_assign_op = self.global_epoch_tensor.assign(self.global_epoch_input)
+
+    def __init_global_step(self):
+        """
+        Create a global step variable to be a reference to the number of iterations
+        :return:
+        """
+        with tf.variable_scope('global_step'):
+            self.global_step_tensor = tf.Variable(0, trainable=False, name='global_step')
+            self.global_step_input = tf.placeholder('int32', None, name='global_step_input')
+            self.global_step_assign_op = self.global_step_tensor.assign(self.global_step_input)
