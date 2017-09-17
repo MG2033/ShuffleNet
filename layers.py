@@ -170,7 +170,7 @@ def depthwise_conv2d(name, x, w=None, kernel_size=(3, 3), padding='SAME', stride
 
 
 ############################################################################################################
-# Shufflenet unit methods
+# ShuffleNet unit methods
 
 def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, num_filters=16, stride=(1, 1),
                     l2_strength=0.0, bias=0.0, batchnorm_enabled=True, is_training=True, fusion='add'):
