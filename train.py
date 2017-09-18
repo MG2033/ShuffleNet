@@ -15,9 +15,8 @@ class Train:
         self.saver = tf.train.Saver(max_to_keep=self.args.max_to_keep,
                                     keep_checkpoint_every_n_hours=10,
                                     save_relative_paths=True)
-        # Data and summarizer references
-        self.data = DataLoader(self.args.batch_size, self.args.shuffle)
-        self.data.load_data()
+        # Summarizer references
+        self.data = data
         self.summarizer = summarizer
 
         # Initializing the model
@@ -122,16 +121,12 @@ class Train:
                 cur_iteration += 1
 
             # Save the current checkpoint
-            if cur_epoch % self.args.save_every == 0:
+            if cur_epoch % self.args.save_model_every == 0:
                 self.save_model()
 
             # Test the model on validation or test data
             if cur_epoch % self.args.test_every == 0:
                 self.test()
-
-        print("Final test!")
-        self.test()
-        print("Training Finished")
 
     def test(self):
         num_iterations = self.args.test_data_size // self.args.batch_size

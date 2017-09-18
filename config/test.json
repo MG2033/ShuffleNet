@@ -1,0 +1,13 @@
+{
+  "num_epochs": 100,
+  "num_classes": 100,
+  "batch_size": 32,
+  "num_groups": 3,
+  "l2_strength": 4e-5,
+  "bias": 0.0,
+  "learning_rate": 8e-4,
+  "batchnorm_enabled": true,
+  "max_to_keep": 4,
+  "save_model_every": 5,
+  "test_every": 5
+}

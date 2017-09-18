@@ -27,6 +27,10 @@ class DataLoader:
         (self.X_train, self.y_train), (self.X_test, self.y_test) = cifar100.load_data()
         self.train_data_len = self.X_train.shape[0]
         self.test_data_len = self.X_test.shape[0]
+        img_height = self.X_train.shape[1]
+        img_width = self.X_train.shape[2]
+        num_channels = self.X_train.shape[3]
+        return img_height, img_width, num_channels, self.train_data_len, self.test_data_len
 
     def generate_batch(self, train=True):
         """Generate batch from X_train/X_test and y_train/y_test using a python DataGenerator"""
