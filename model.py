@@ -28,7 +28,7 @@ class ShuffleNet:
             # Input images
             self.X = tf.placeholder(tf.float32,
                                     [None, self.args.img_height, self.args.img_width,
-                                           self.args.num_channels])
+                                     self.args.num_channels])
             # Classification supervision, it's an argmax. Feel free to change it to one-hot,
             # but don't forget to change the loss from sparse as well
             self.y = tf.placeholder(tf.int32, [None])
@@ -77,7 +77,8 @@ class ShuffleNet:
         stage4 = self.__stage(stage3, stage=4, repeat=3)
         global_pool = avg_pool_2d(stage4, size=(7, 7), stride=(1, 1), name='global_pool')
         flattened = flatten(global_pool)
-        self.logits = dense('fc', flattened, w=None, output_dim=1000, l2_strength=self.args.l2_strength,
+        self.logits = dense('fc', flattened, w=None, output_dim=self.args.num_classes,
+                            l2_strength=self.args.l2_strength,
                             bias=self.args.bias,
                             is_training=self.is_training)
         self.__init_output()
