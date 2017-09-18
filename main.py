@@ -21,13 +21,13 @@ def main():
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
 
-    # Model creation
-    model = ShuffleNet(config_args)
-
     # Data loading
     data = DataLoader(config_args.batch_size, config_args.shuffle)
     config_args.img_height, config_args.img_width, config_args.num_channels, \
     config_args.train_data_size, config_args.test_data_size = data.load_data()
+
+    # Model creation
+    model = ShuffleNet(config_args)
 
     # Summarizer creation
     summarizer = Summarizer(sess, config_args.summary_dir)
