@@ -44,6 +44,7 @@ class ShuffleNet:
                                           fusion='concat', l2_strength=self.args.l2_strength, bias=self.args.bias,
                                           batchnorm_enabled=self.args.batchnorm_enabled,
                                           is_training=self.is_training)
+            #TODO Fix error here!!! dimension loss :D
             for i in range(1, repeat + 1):
                 stage_layer = shufflenet_unit('stage' + str(stage) + '_' + str(i), x=stage_layer, w=None,
                                               num_groups=self.args.num_groups,
