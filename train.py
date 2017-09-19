@@ -108,7 +108,7 @@ class Train:
 
                     # Print in console
                     tqdm_batch.close()
-                    print("epoch-" + str(cur_epoch) + " - " + "loss: " + str(avg_loss) + " -" + " acc: " + str(
+                    print("Epoch-" + str(cur_epoch) + " | " + "loss: " + str(avg_loss) + " -" + " acc: " + str(
                         avg_acc)[
                                                                                                            :7])
                     # Break the loop to finalize this epoch
@@ -142,7 +142,7 @@ class Train:
             # Feed this variables to the network
             feed_dict = {self.model.X: X_batch,
                          self.model.y: y_batch,
-                         self.model.is_training: True
+                         self.model.is_training: False
                          }
             # Run the feed_forward
             loss, acc = self.sess.run(
@@ -151,9 +151,10 @@ class Train:
             # Append loss and accuracy
             loss_list += [loss]
             acc_list += [acc]
+            cur_iteration += 1
 
             if cur_iteration >= num_iterations - 1:
                 avg_loss = np.mean(loss_list)
                 avg_acc = np.mean(acc_list)
-                print('test_results - test_loss: ' + str(avg_loss) + ' - test_acc: ' + str(avg_acc)[:7])
+                print('Test results | test_loss: ' + str(avg_loss) + ' - test_acc: ' + str(avg_acc)[:7])
                 break

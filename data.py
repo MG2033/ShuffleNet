@@ -27,7 +27,10 @@ class DataLoader:
         (_, self.y_train), (self.X_test, self.y_test) = cifar100.load_data()
 
         # For going in the same experiment as the paper. Resizing the input image data to 224x224 is done.
-        self.X_train = np.zeros((50000, 224, 224, 3), dtype=np.uint8)
+        self.X_train = np.zeros((100, 224, 224, 3), dtype=np.uint8)
+        self.y_train = self.y_train[:100]
+        self.X_test = self.X_train
+        self.y_test = self.y_test
 
         self.train_data_len = self.X_train.shape[0]
         self.test_data_len = self.X_test.shape[0]
@@ -70,6 +73,6 @@ class DataLoader:
                 start_idx += self.batch_size
 
                 # Reset everything
-                if start_idx >= self.train_data_len:
+                if start_idx >= self.test_data_len:
                     start_idx = 0
                 yield X_batch, y_batch
