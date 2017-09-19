@@ -8,7 +8,11 @@ import tensorflow as tf
 
 def main():
     # Parse the JSON arguments
-    config_args = parse_args()
+    try:
+        config_args = parse_args()
+    except:
+        print("Add a config file using \'--config file_name.json\'")
+        exit(1)
 
     # Create the experiment directories
     _, config_args.summary_dir, config_args.checkpoint_dir = create_experiment_dirs(config_args.experiment_dir)
@@ -27,7 +31,9 @@ def main():
     config_args.train_data_size, config_args.test_data_size = data.load_data()
 
     # Model creation
+    print("Building the model...")
     model = ShuffleNet(config_args)
+    print("Model is built successfully\n\n")
 
     # Summarizer creation
     summarizer = Summarizer(sess, config_args.summary_dir)
@@ -37,11 +43,11 @@ def main():
 
     print("Training...")
     trainer.train()
-    print("Training Finished")
+    print("Training Finished\n\n")
 
     print("Final test!")
     trainer.test()
-    print("Testing Finished")
+    print("Testing Finished\n\n")
 
 
 if __name__ == '__main__':

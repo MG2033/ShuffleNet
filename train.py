@@ -80,14 +80,12 @@ class Train:
                              self.model.is_training: True
                              }
                 # Run the feed_forward
-                _, loss, acc, summaries_merged = self.sess.run(
-                    [self.model.train_op, self.model.loss, self.model.accuracy, self.model.merged_summaries],
+                _, loss, acc = self.sess.run(
+                    [self.model.train_op, self.model.loss, self.model.accuracy],
                     feed_dict=feed_dict)
                 # Append loss and accuracy
                 loss_list += [loss]
                 acc_list += [acc]
-                # summarize
-                self.summarizer.add_summary(cur_it, summaries_merged=summaries_merged)
 
                 # Update the Global step
                 self.model.global_step_assign_op.eval(session=self.sess,
@@ -100,6 +98,9 @@ class Train:
                     summaries_dict = dict()
                     summaries_dict['loss'] = avg_loss
                     summaries_dict['acc'] = avg_acc
+
+                    # summarize
+                    self.summarizer.add_summary(cur_it, summaries_dict=summaries_dict)
 
                     # Update the Current Epoch tensor
                     self.model.global_epoch_assign_op.eval(session=self.sess,

@@ -44,7 +44,6 @@ class ShuffleNet:
                                           fusion='concat', l2_strength=self.args.l2_strength, bias=self.args.bias,
                                           batchnorm_enabled=self.args.batchnorm_enabled,
                                           is_training=self.is_training)
-            # TODO Fix error here!!! dimension loss :D
             for i in range(1, repeat + 1):
                 stage_layer = shufflenet_unit('stage' + str(stage) + '_' + str(i), x=stage_layer, w=None,
                                               num_groups=self.args.num_groups,
@@ -68,16 +67,20 @@ class ShuffleNet:
 
     def __build(self):
         self.__init_global_epoch()
+        self.__init_global_step()
         self.__init_input()
+
         conv1 = conv2d('conv1', x=self.X, w=None, num_filters=self.output_channels['conv1'], kernel_size=(3, 3),
                        stride=(2, 2), l2_strength=self.args.l2_strength, bias=self.args.bias,
                        batchnorm_enabled=self.args.batchnorm_enabled, is_training=self.is_training)
-        max_pool = max_pool_2d(conv1, size=(3, 3), stride=(2, 2), name='max_pool')
+        conv1_padded = tf.pad(conv1, [[0, 0], [1, 1], [1, 1], [0, 0]], "CONSTANT")
+        max_pool = max_pool_2d(conv1_padded, size=(3, 3), stride=(2, 2), name='max_pool')
         stage2 = self.__stage(max_pool, stage=2, repeat=3)
         stage3 = self.__stage(stage2, stage=3, repeat=7)
         stage4 = self.__stage(stage3, stage=4, repeat=3)
         global_pool = avg_pool_2d(stage4, size=(7, 7), stride=(1, 1), name='global_pool')
         flattened = flatten(global_pool)
+
         self.logits = dense('fc', flattened, w=None, output_dim=self.args.num_classes,
                             l2_strength=self.args.l2_strength,
                             bias=self.args.bias,

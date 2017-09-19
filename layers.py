@@ -197,7 +197,8 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
                                      activation=None, batchnorm_enabled=batchnorm_enabled, is_training=is_training)
 
         if stride == (2, 2):
-            residual_pooled = avg_pool_2d(residual, size=(3, 3), stride=stride)
+            residual_padded = tf.pad(residual, [[0, 0], [1, 1], [1, 1], [0, 0]], "CONSTANT")
+            residual_pooled = avg_pool_2d(residual_padded, size=(3, 3), stride=stride)
         else:
             residual_pooled = residual
 
