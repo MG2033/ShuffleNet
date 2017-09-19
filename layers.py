@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
+
 ############################################################################################################
 # Convolution layer Methods
 def __conv2d_p(name, x, w=None, num_filters=16, kernel_size=(3, 3), padding='SAME', stride=(1, 1),
@@ -101,16 +102,16 @@ def grouped_conv2d(name, x, w=None, num_filters=16, kernel_size=(3, 3), padding=
                    activation=None, batchnorm_enabled=False, dropout_keep_prob=-1,
                    is_training=True):
     with tf.variable_scope(name) as scope:
-        sz = tf.shape(x)[3] // num_groups
+        sz = x.get_shape()[3].value // num_groups
         conv_side_layers = [
-            conv2d(scope + str(i), x[:, :, :, i * sz:i * sz + sz], w, num_filters // num_groups, kernel_size, padding,
+            conv2d(name + str(i), x[:, :, :, i * sz:i * sz + sz], w, num_filters // num_groups, kernel_size, padding,
                    stride,
                    initializer,
                    l2_strength, bias, activation=None,
                    batchnorm_enabled=False, max_pool_enabled=False, dropout_keep_prob=dropout_keep_prob,
                    is_training=is_training) for i in
             range(num_groups)]
-        conv_g = tf.stack(conv_side_layers, axis=-1)
+        conv_g = tf.concat(conv_side_layers, axis=-1)
 
         if batchnorm_enabled:
             conv_o_bn = tf.layers.batch_normalization(conv_g, training=is_training)
@@ -180,7 +181,6 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
 
     with tf.variable_scope(name) as scope:
         residual = x
-
         if group_conv_bottleneck:
             bottleneck = grouped_conv2d('bottleneck', x=x, w=None, num_filters=num_filters // 4, kernel_size=(1, 1),
                                         padding=padding,
@@ -193,7 +193,7 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
                                 batchnorm_enabled=batchnorm_enabled, is_training=is_training)
 
         shuffled = channel_shuffle('channel_shuffle', bottleneck, num_groups)
-        depthwise = depthwise_conv2d('depthwise', shuffled, w=None, stride=stride, l2_strength=l2_strength, bias=bias,
+        depthwise = depthwise_conv2d('depthwise', x=shuffled, w=None, stride=stride, l2_strength=l2_strength, bias=bias,
                                      activation=None, batchnorm_enabled=batchnorm_enabled, is_training=is_training)
 
         if stride == (2, 2):
@@ -203,7 +203,7 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
 
         if fusion == 'concat':
             group_conv1x1 = grouped_conv2d('group_conv1x1', x=depthwise, w=None,
-                                           num_filters=num_filters - residual.shape[3],
+                                           num_filters=num_filters - residual.get_shape()[3].value,
                                            kernel_size=(1, 1),
                                            padding=padding,
                                            num_groups=num_groups, l2_strength=l2_strength, bias=bias,
@@ -219,7 +219,7 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
                                            activation=None,
                                            batchnorm_enabled=batchnorm_enabled, is_training=is_training)
             residual_match = residual_pooled
-            if num_filters != residual_pooled.shape[3]:
+            if num_filters != residual_pooled.get_shape()[3].value:
                 residual_match = conv2d('residual_match', x=residual_pooled, w=None, num_filters=num_filters,
                                         kernel_size=(1, 1),
                                         padding=padding, l2_strength=l2_strength, bias=bias, activation=None,
@@ -231,9 +231,10 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
 
 def channel_shuffle(name, x, num_groups):
     with tf.variable_scope(name) as scope:
-        x_reshaped = tf.reshape(x, [-1, -1, -1, num_groups, -1])
+        n, h, w, c = x.shape.as_list()
+        x_reshaped = tf.reshape(x, [-1, h, w, num_groups, c - num_groups])
         x_transposed = tf.transpose(x_reshaped, [0, 1, 2, 4, 3])
-        output = tf.reshape(x_transposed, [-1, -1, -1, -1])
+        output = tf.reshape(x_transposed, [-1, h, w, c])
         return output
 
 

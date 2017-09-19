@@ -24,7 +24,11 @@ class DataLoader:
 
     def load_data(self):
         # No validation set was taken for CIFAR100. Feel free to make the appropriate changes for your datasets.
-        (self.X_train, self.y_train), (self.X_test, self.y_test) = cifar100.load_data()
+        (_, self.y_train), (self.X_test, self.y_test) = cifar100.load_data()
+
+        # For going in the same experiment as the paper. Resizing the input image data to 224x224 is done.
+        self.X_train = np.zeros((50000, 224, 224, 3), dtype=np.uint8)
+
         self.train_data_len = self.X_train.shape[0]
         self.test_data_len = self.X_test.shape[0]
         img_height = self.X_train.shape[1]

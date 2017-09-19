@@ -37,14 +37,14 @@ class ShuffleNet:
 
     def __stage(self, x, stage=2, repeat=3):
         if 2 <= stage <= 4:
-            stage_layer = shufflenet_unit('stage' + str(stage) + '_1', x=x, w=None, num_groups=self.args.num_groups,
+            stage_layer = shufflenet_unit('stage' + str(stage) + '_0', x=x, w=None, num_groups=self.args.num_groups,
                                           group_conv_bottleneck=not (stage == 2),
                                           num_filters=self.output_channels[str(self.args.num_groups)][stage - 2],
                                           stride=(2, 2),
                                           fusion='concat', l2_strength=self.args.l2_strength, bias=self.args.bias,
                                           batchnorm_enabled=self.args.batchnorm_enabled,
                                           is_training=self.is_training)
-            #TODO Fix error here!!! dimension loss :D
+            # TODO Fix error here!!! dimension loss :D
             for i in range(1, repeat + 1):
                 stage_layer = shufflenet_unit('stage' + str(stage) + '_' + str(i), x=stage_layer, w=None,
                                               num_groups=self.args.num_groups,
@@ -63,7 +63,7 @@ class ShuffleNet:
         with tf.variable_scope('output'):
             self.loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logits, labels=self.y, name='loss')
             self.train_op = tf.train.AdamOptimizer(learning_rate=self.args.learning_rate).minimize(self.loss)
-            self.y_out_argmax = tf.arg_max(tf.nn.softmax(self.logits), output_type=tf.int32)
+            self.y_out_argmax = tf.argmax(tf.nn.softmax(self.logits), output_type=tf.int32)
             self.accuracy = tf.reduce_mean(tf.reduce_mean(tf.cast(tf.equal(self.y, self.y_out_argmax), tf.float32)))
 
     def __build(self):
