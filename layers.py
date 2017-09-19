@@ -233,7 +233,7 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
 def channel_shuffle(name, x, num_groups):
     with tf.variable_scope(name) as scope:
         n, h, w, c = x.shape.as_list()
-        x_reshaped = tf.reshape(x, [-1, h, w, num_groups, c - num_groups])
+        x_reshaped = tf.reshape(x, [-1, h, w, num_groups, c // num_groups])
         x_transposed = tf.transpose(x_reshaped, [0, 1, 2, 4, 3])
         output = tf.reshape(x_transposed, [-1, h, w, c])
         return output
