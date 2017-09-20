@@ -27,6 +27,7 @@ class DataLoader:
         (_, self.y_train), (self.X_test, self.y_test) = cifar100.load_data()
 
         # For going in the same experiment as the paper. Resizing the input image data to 224x224 is done.
+        #TODO: modify below 4 lines to get the data correctly!
         self.X_train = np.zeros((100, 224, 224, 3), dtype=np.uint8)
         self.y_train = self.y_train[:100]
         self.X_test = self.X_train
@@ -42,6 +43,7 @@ class DataLoader:
     def generate_batch(self, train=True):
         """Generate batch from X_train/X_test and y_train/y_test using a python DataGenerator"""
         if train:
+            # Training time!
             new_epoch = True
             start_idx = 0
             mask = None
@@ -65,6 +67,7 @@ class DataLoader:
                     mask = None
                 yield X_batch, y_batch
         else:
+            # Testing time!
             start_idx = 0
             while True:
                 # Batch mask selection

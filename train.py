@@ -60,7 +60,7 @@ class Train:
             # Initialize tqdm
             num_iterations = self.args.train_data_size // self.args.batch_size
             tqdm_batch = tqdm(self.data.generate_batch(train=True), total=num_iterations,
-                              desc="epoch-" + str(cur_epoch) + "-")
+                              desc="Epoch-" + str(cur_epoch) + "-")
 
             # Initialize the current iterations
             cur_iteration = 0
@@ -132,7 +132,7 @@ class Train:
     def test(self):
         num_iterations = self.args.test_data_size // self.args.batch_size
         tqdm_batch = tqdm(self.data.generate_batch(train=False), total=num_iterations,
-                          desc='testing')
+                          desc='Testing')
         # Initialize classification accuracy and loss lists
         loss_list = []
         acc_list = []
