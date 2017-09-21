@@ -27,8 +27,10 @@ def main():
 
     # Data loading
     data = DataLoader(config_args.batch_size, config_args.shuffle)
+    print("Loading Data...")
     config_args.img_height, config_args.img_width, config_args.num_channels, \
     config_args.train_data_size, config_args.test_data_size = data.load_data()
+    print("Data loaded\n\n")
 
     # Model creation
     print("Building the model...")
@@ -41,12 +43,15 @@ def main():
     # Train class
     trainer = Train(sess, model, data, summarizer)
 
-    print("Training...")
-    trainer.train()
-    print("Training Finished\n\n")
+    try:
+        print("Training...")
+        trainer.train()
+        print("Training Finished\n\n")
+    except:
+        trainer.save_model()
 
     print("Final test!")
-    trainer.test()
+    # trainer.test()
     print("Testing Finished\n\n")
 
 

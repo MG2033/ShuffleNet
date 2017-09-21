@@ -35,6 +35,12 @@ class ShuffleNet:
             # is_training is for batch normalization and dropout, if they exist
             self.is_training = tf.placeholder(tf.bool)
 
+    def __resize(self, x):
+        return tf.image.resize_bicubic(x, [224, 224])
+
+    def __normalize(self, x):
+        return x - self.mean_X
+
     def __stage(self, x, stage=2, repeat=3):
         if 2 <= stage <= 4:
             stage_layer = shufflenet_unit('stage' + str(stage) + '_0', x=x, w=None, num_groups=self.args.num_groups,
@@ -70,7 +76,8 @@ class ShuffleNet:
         self.__init_global_step()
         self.__init_input()
 
-        conv1 = conv2d('conv1', x=self.X, w=None, num_filters=self.output_channels['conv1'], kernel_size=(3, 3),
+        x_resized = self.__resize(self.X)
+        conv1 = conv2d('conv1', x=x_resized, w=None, num_filters=self.output_channels['conv1'], kernel_size=(3, 3),
                        stride=(2, 2), l2_strength=self.args.l2_strength, bias=self.args.bias,
                        batchnorm_enabled=self.args.batchnorm_enabled, is_training=self.is_training)
         conv1_padded = tf.pad(conv1, [[0, 0], [1, 1], [1, 1], [0, 0]], "CONSTANT")

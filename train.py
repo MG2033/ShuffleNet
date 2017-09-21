@@ -1,6 +1,5 @@
 import tensorflow as tf
 from tqdm import tqdm
-from data import DataLoader
 import numpy as np
 
 
@@ -59,7 +58,7 @@ class Train:
 
             # Initialize tqdm
             num_iterations = self.args.train_data_size // self.args.batch_size
-            tqdm_batch = tqdm(self.data.generate_batch(train=True), total=num_iterations,
+            tqdm_batch = tqdm(self.data.generate_batch(type='train'), total=num_iterations,
                               desc="Epoch-" + str(cur_epoch) + "-")
 
             # Initialize the current iterations
@@ -127,11 +126,11 @@ class Train:
 
             # Test the model on validation or test data
             if cur_epoch % self.args.test_every == 0:
-                self.test()
+                self.test('val')
 
-    def test(self):
+    def test(self, test_type='val'):
         num_iterations = self.args.test_data_size // self.args.batch_size
-        tqdm_batch = tqdm(self.data.generate_batch(train=False), total=num_iterations,
+        tqdm_batch = tqdm(self.data.generate_batch(type=test_type), total=num_iterations,
                           desc='Testing')
         # Initialize classification accuracy and loss lists
         loss_list = []
