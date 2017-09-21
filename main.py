@@ -1,7 +1,7 @@
 from utils import parse_args, create_experiment_dirs
 from model import ShuffleNet
 from train import Train
-from data import DataLoader
+from data_loader import DataLoader
 from summarizer import Summarizer
 import tensorflow as tf
 
@@ -39,7 +39,6 @@ def main():
 
     # Summarizer creation
     summarizer = Summarizer(sess, config_args.summary_dir)
-
     # Train class
     trainer = Train(sess, model, data, summarizer)
 
@@ -47,7 +46,7 @@ def main():
         print("Training...")
         trainer.train()
         print("Training Finished\n\n")
-    except:
+    except KeyboardInterrupt:
         trainer.save_model()
 
     print("Final test!")

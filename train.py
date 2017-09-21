@@ -79,8 +79,8 @@ class Train:
                              self.model.is_training: True
                              }
                 # Run the feed_forward
-                _, loss, acc = self.sess.run(
-                    [self.model.train_op, self.model.loss, self.model.accuracy],
+                _, loss, acc, summaries_merged = self.sess.run(
+                    [self.model.train_op, self.model.loss, self.model.accuracy, self.model.summaries_merged],
                     feed_dict=feed_dict)
                 # Append loss and accuracy
                 loss_list += [loss]
@@ -89,6 +89,8 @@ class Train:
                 # Update the Global step
                 self.model.global_step_assign_op.eval(session=self.sess,
                                                       feed_dict={self.model.global_step_input: cur_it + 1})
+
+                # self.summarizer.add_summary(cur_it, summaries_merged=summaries_merged)
 
                 if cur_it >= num_iterations - 1:
                     avg_loss = np.mean(loss_list)

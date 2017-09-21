@@ -15,6 +15,7 @@ class ShuffleNet:
         self.train_op = None
         self.accuracy = None
         self.y_out_argmax = None
+        self.summaries_merged = None
 
         # A number stands for the num_groups
         # Output channels for conv1 layer
@@ -37,9 +38,6 @@ class ShuffleNet:
 
     def __resize(self, x):
         return tf.image.resize_bicubic(x, [224, 224])
-
-    def __normalize(self, x):
-        return x - self.mean_X
 
     def __stage(self, x, stage=2, repeat=3):
         if 2 <= stage <= 4:
@@ -66,10 +64,16 @@ class ShuffleNet:
 
     def __init_output(self):
         with tf.variable_scope('output'):
-            self.loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logits, labels=self.y, name='loss')
+            self.loss = tf.reduce_mean(
+                tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logits, labels=self.y, name='loss'))
             self.train_op = tf.train.AdamOptimizer(learning_rate=self.args.learning_rate).minimize(self.loss)
             self.y_out_argmax = tf.argmax(tf.nn.softmax(self.logits), axis=-1, output_type=tf.int32)
-            self.accuracy = tf.reduce_mean(tf.reduce_mean(tf.cast(tf.equal(self.y, self.y_out_argmax), tf.float32)))
+            self.accuracy = tf.reduce_mean(tf.cast(tf.equal(self.y, self.y_out_argmax), tf.float32))
+
+        with tf.name_scope('train-summary'):
+            tf.summary.scalar('loss', self.loss)
+            tf.summary.scalar('acc', self.accuracy)
+            self.summaries_merged = tf.summary.merge_all()
 
     def __build(self):
         self.__init_global_epoch()

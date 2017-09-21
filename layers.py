@@ -104,7 +104,8 @@ def grouped_conv2d(name, x, w=None, num_filters=16, kernel_size=(3, 3), padding=
     with tf.variable_scope(name) as scope:
         sz = x.get_shape()[3].value // num_groups
         conv_side_layers = [
-            conv2d(name + str(i), x[:, :, :, i * sz:i * sz + sz], w, num_filters // num_groups, kernel_size, padding,
+            conv2d(name + "_" + str(i), x[:, :, :, i * sz:i * sz + sz], w, num_filters // num_groups, kernel_size,
+                   padding,
                    stride,
                    initializer,
                    l2_strength, bias, activation=None,
@@ -377,7 +378,6 @@ def __variable_with_weight_decay(kernel_shape, initializer, wd):
     if wd and (not tf.get_variable_scope().reuse):
         weight_decay = tf.multiply(tf.nn.l2_loss(w), wd, name='w_loss')
         tf.add_to_collection(collection_name, weight_decay)
-    __variable_summaries(w)
     return w
 
 
