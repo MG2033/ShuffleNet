@@ -90,7 +90,7 @@ class Train:
                 self.model.global_step_assign_op.eval(session=self.sess,
                                                       feed_dict={self.model.global_step_input: cur_it + 1})
 
-                # self.summarizer.add_summary(cur_it, summaries_merged=summaries_merged)
+                self.summarizer.add_summary(cur_it, summaries_merged=summaries_merged)
 
                 if cur_it >= num_iterations - 1:
                     avg_loss = np.mean(loss_list)
