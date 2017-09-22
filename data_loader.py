@@ -87,7 +87,7 @@ class DataLoader:
             while True:
                 # Batch mask selection
                 X_batch = self.X_val[start_idx:start_idx + self.batch_size] - self.X_mean
-                y_batch = self.y_val[start_idx:start_idx + self.batch_size, 0]
+                y_batch = self.y_val[start_idx:start_idx + self.batch_size]
                 start_idx += self.batch_size
 
                 # Reset everything
