@@ -71,7 +71,7 @@ class Train:
             # Loop by the number of iterations
             for X_batch, y_batch in tqdm_batch:
                 # Get the current iteration for summarizing it
-                cur_it = self.model.global_step_tensor.eval(self.sess)
+                cur_step = self.model.global_step_tensor.eval(self.sess)
 
                 # Feed this variables to the network
                 feed_dict = {self.model.X: X_batch,
@@ -88,11 +88,11 @@ class Train:
 
                 # Update the Global step
                 self.model.global_step_assign_op.eval(session=self.sess,
-                                                      feed_dict={self.model.global_step_input: cur_it + 1})
+                                                      feed_dict={self.model.global_step_input: cur_step + 1})
 
-                self.summarizer.add_summary(cur_it, summaries_merged=summaries_merged)
+                self.summarizer.add_summary(cur_step, summaries_merged=summaries_merged)
 
-                if cur_it >= num_iterations - 1:
+                if cur_iteration >= num_iterations - 1:
                     avg_loss = np.mean(loss_list)
                     avg_acc = np.mean(acc_list)
                     # summarize
@@ -101,7 +101,7 @@ class Train:
                     summaries_dict['acc'] = avg_acc
 
                     # summarize
-                    self.summarizer.add_summary(cur_it, summaries_dict=summaries_dict)
+                    self.summarizer.add_summary(cur_step, summaries_dict=summaries_dict)
 
                     # Update the Current Epoch tensor
                     self.model.global_epoch_assign_op.eval(session=self.sess,
@@ -115,10 +115,6 @@ class Train:
                     # Break the loop to finalize this epoch
                     break
 
-                # Update the Global step (current iteration)
-                self.model.global_step_assign_op.eval(session=self.sess,
-                                                      feed_dict={self.model.global_step_input: cur_it + 1})
-
                 # Update the current iteration
                 cur_iteration += 1
 
@@ -129,6 +125,7 @@ class Train:
             # Test the model on validation or test data
             if cur_epoch % self.args.test_every == 0:
                 self.test('val')
+                pass
 
     def test(self, test_type='val'):
         num_iterations = self.args.test_data_size // self.args.batch_size
@@ -152,10 +149,11 @@ class Train:
             # Append loss and accuracy
             loss_list += [loss]
             acc_list += [acc]
-            cur_iteration += 1
 
             if cur_iteration >= num_iterations - 1:
                 avg_loss = np.mean(loss_list)
                 avg_acc = np.mean(acc_list)
                 print('Test results | test_loss: ' + str(avg_loss) + ' - test_acc: ' + str(avg_acc)[:7])
                 break
+
+            cur_iteration += 1
