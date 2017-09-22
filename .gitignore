@@ -1,3 +1,6 @@
 .idea/
 experiments/
 data/
+prepare_data.py
+floyd_requirements.txt
+.floyd*
