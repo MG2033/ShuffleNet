@@ -42,7 +42,6 @@ class DataLoader:
         num_channels = self.X_train.shape[3]
         return img_height, img_width, num_channels, self.train_data_len, self.val_data_len
 
-
     def generate_batch(self, type='train'):
         """Generate batch from X_train/X_test and y_train/y_test using a python DataGenerator"""
         if type == 'train':

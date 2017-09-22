@@ -72,7 +72,7 @@ class ShuffleNet:
             self.y_out_argmax = tf.argmax(tf.nn.softmax(self.logits), axis=-1, output_type=tf.int32)
             self.accuracy = tf.reduce_mean(tf.cast(tf.equal(self.y, self.y_out_argmax), tf.float32))
 
-        with tf.name_scope('train-summary'):
+        with tf.name_scope('train-summary-per-iteration'):
             tf.summary.scalar('loss', self.loss)
             tf.summary.scalar('acc', self.accuracy)
             self.summaries_merged = tf.summary.merge_all()
