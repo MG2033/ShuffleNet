@@ -14,6 +14,7 @@ class Train:
         self.saver = tf.train.Saver(max_to_keep=self.args.max_to_keep,
                                     keep_checkpoint_every_n_hours=10,
                                     save_relative_paths=True)
+        Train.__calc_flops()
         # Summarizer references
         self.data = data
         self.summarizer = summarizer
@@ -157,3 +158,11 @@ class Train:
                 break
 
             cur_iteration += 1
+
+    @staticmethod
+    def __calc_flops():
+        # Print to stdout an analysis of the number of floating point operations in the
+        # model broken down by individual operations.
+        tf.profiler.profile(
+            tf.get_default_graph(),
+            options=tf.profiler.ProfileOptionBuilder.float_operation(), cmd='scope')

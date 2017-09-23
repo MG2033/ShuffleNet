@@ -63,7 +63,7 @@ def conv2d(name, x, w=None, num_filters=16, kernel_size=(3, 3), padding='SAME', 
     :return: The output tensor of the layer (N, H', W', C').
     """
     with tf.variable_scope(name) as scope:
-        conv_o_b = __conv2d_p(scope, x=x, w=w, num_filters=num_filters, kernel_size=kernel_size, stride=stride,
+        conv_o_b = __conv2d_p('conv', x=x, w=w, num_filters=num_filters, kernel_size=kernel_size, stride=stride,
                               padding=padding,
                               initializer=initializer, l2_strength=l2_strength, bias=bias)
 
@@ -154,7 +154,7 @@ def depthwise_conv2d(name, x, w=None, kernel_size=(3, 3), padding='SAME', stride
                      initializer=tf.contrib.layers.xavier_initializer(), l2_strength=0.0, bias=0.0, activation=None,
                      batchnorm_enabled=False, is_training=True):
     with tf.variable_scope(name) as scope:
-        conv_o_b = __depthwise_conv2d_p(name=scope, x=x, w=w, kernel_size=kernel_size, padding=padding,
+        conv_o_b = __depthwise_conv2d_p(name='conv', x=x, w=w, kernel_size=kernel_size, padding=padding,
                                         stride=stride, initializer=initializer, l2_strength=l2_strength, bias=bias)
 
         if batchnorm_enabled:
@@ -183,7 +183,7 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
     with tf.variable_scope(name) as scope:
         residual = x
         if group_conv_bottleneck:
-            bottleneck = grouped_conv2d('bottleneck', x=x, w=None, num_filters=num_filters // 4, kernel_size=(1, 1),
+            bottleneck = grouped_conv2d('Gbottleneck', x=x, w=None, num_filters=num_filters // 4, kernel_size=(1, 1),
                                         padding=padding,
                                         num_groups=num_groups, l2_strength=l2_strength, bias=bias,
                                         activation=activation,
@@ -204,7 +204,7 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
             residual_pooled = residual
 
         if fusion == 'concat':
-            group_conv1x1 = grouped_conv2d('group_conv1x1', x=depthwise, w=None,
+            group_conv1x1 = grouped_conv2d('Gconv1x1', x=depthwise, w=None,
                                            num_filters=num_filters - residual.get_shape()[3].value,
                                            kernel_size=(1, 1),
                                            padding=padding,
@@ -213,7 +213,7 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
                                            batchnorm_enabled=batchnorm_enabled, is_training=is_training)
             return activation(tf.concat([group_conv1x1, residual_pooled], axis=-1))
         elif fusion == 'add':
-            group_conv1x1 = grouped_conv2d('group_conv1x1', x=depthwise, w=None,
+            group_conv1x1 = grouped_conv2d('Gconv1x1', x=depthwise, w=None,
                                            num_filters=num_filters,
                                            kernel_size=(1, 1),
                                            padding=padding,
@@ -288,7 +288,7 @@ def dense(name, x, w=None, output_dim=128, initializer=tf.contrib.layers.xavier_
     :return out: The output of the layer. (N, H)
     """
     with tf.variable_scope(name) as scope:
-        dense_o_b = __dense_p(name=scope, x=x, w=w, output_dim=output_dim, initializer=initializer,
+        dense_o_b = __dense_p(name='dense', x=x, w=w, output_dim=output_dim, initializer=initializer,
                               l2_strength=l2_strength,
                               bias=bias)
 
