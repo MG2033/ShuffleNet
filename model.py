@@ -12,6 +12,8 @@ class ShuffleNet:
         self.logits = None
         self.is_training = None
         self.loss = None
+        self.regularization_loss = None
+        self.cross_entropy_loss = None
         self.train_op = None
         self.accuracy = None
         self.y_out_argmax = None
@@ -64,12 +66,16 @@ class ShuffleNet:
 
     def __init_output(self):
         with tf.variable_scope('output'):
-            self.loss = tf.reduce_mean(
+            self.regularization_loss = tf.reduce_sum(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
+            self.cross_entropy_loss = tf.reduce_mean(
                 tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logits, labels=self.y, name='loss'))
+            self.loss = self.regularization_loss + self.cross_entropy_loss
+
             update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
             with tf.control_dependencies(update_ops):
                 self.train_op = tf.train.AdamOptimizer(learning_rate=self.args.learning_rate).minimize(self.loss)
             self.y_out_argmax = tf.argmax(tf.nn.softmax(self.logits), axis=-1, output_type=tf.int32)
+
             self.accuracy = tf.reduce_mean(tf.cast(tf.equal(self.y, self.y_out_argmax), tf.float32))
 
         with tf.name_scope('train-summary-per-iteration'):
