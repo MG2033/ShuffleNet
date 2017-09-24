@@ -26,6 +26,7 @@ def main():
     sess = tf.Session(config=config)
 
     # Data loading
+    # The batch size is equal to 1 when testing to simulate the real experiment.
     data_batch_size = config_args.batch_size if config_args.train_or_test == "train" else 1
     data = DataLoader(data_batch_size, config_args.shuffle)
     print("Loading Data...")
@@ -54,6 +55,7 @@ def main():
     elif config_args.train_or_test == 'test':
         print("Final test!")
         calculate_flops()
+        # This can be 'val' or 'test' or even 'train' according to the needs.
         trainer.test('val')
         print("Testing Finished\n\n")
 
