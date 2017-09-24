@@ -42,16 +42,18 @@ def main():
     # Train class
     trainer = Train(sess, model, data, summarizer)
 
-    try:
-        print("Training...")
-        trainer.train()
-        print("Training Finished\n\n")
-    except KeyboardInterrupt:
-        trainer.save_model()
+    if config_args.to_train:
+        try:
+            print("Training...")
+            trainer.train()
+            print("Training Finished\n\n")
+        except KeyboardInterrupt:
+            trainer.save_model()
 
-    print("Final test!")
-    # trainer.test()
-    print("Testing Finished\n\n")
+    if config_args.to_test:
+        print("Final test!")
+        # trainer.test()
+        print("Testing Finished\n\n")
 
 
 if __name__ == '__main__':

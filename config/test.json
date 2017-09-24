@@ -11,5 +11,7 @@
   "batchnorm_enabled": true,
   "max_to_keep": 4,
   "save_model_every": 5,
-  "test_every": 5
+  "test_every": 5,
+  "to_train": true,
+  "to_test": true
 }
