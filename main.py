@@ -1,4 +1,4 @@
-from utils import parse_args, create_experiment_dirs
+from utils import parse_args, create_experiment_dirs, calculate_flops
 from model import ShuffleNet
 from train import Train
 from data_loader import DataLoader
@@ -26,7 +26,8 @@ def main():
     sess = tf.Session(config=config)
 
     # Data loading
-    data = DataLoader(config_args.batch_size, config_args.shuffle)
+    data_batch_size = config_args.batch_size if config_args.train_or_test == "train" else 1
+    data = DataLoader(data_batch_size, config_args.shuffle)
     print("Loading Data...")
     config_args.img_height, config_args.img_width, config_args.num_channels, \
     config_args.train_data_size, config_args.test_data_size = data.load_data()
@@ -52,7 +53,8 @@ def main():
 
     elif config_args.train_or_test == 'test':
         print("Final test!")
-        # trainer.test()
+        calculate_flops()
+        trainer.test('val')
         print("Testing Finished\n\n")
 
     else:

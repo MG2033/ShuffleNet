@@ -53,7 +53,7 @@ def create_experiment_dirs(exp_dir):
         print("Creating directories error: {0}".format(err))
         exit(-1)
 
-def calc_flops():
+def calculate_flops():
     # Print to stdout an analysis of the number of floating point operations in the
     # model broken down by individual operations.
     tf.profiler.profile(

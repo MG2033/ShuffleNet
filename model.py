@@ -28,6 +28,7 @@ class ShuffleNet:
 
     def __init_input(self):
         batch_size = self.args.batch_size if self.args.train_or_test == 'train' else 1
+        print (batch_size)
         with tf.variable_scope('input'):
             # Input images
             self.X = tf.placeholder(tf.float32,
