@@ -42,7 +42,7 @@ def main():
     # Train class
     trainer = Train(sess, model, data, summarizer)
 
-    if config_args.to_train:
+    if config_args.train_or_test == 'train':
         try:
             print("Training...")
             trainer.train()
@@ -50,10 +50,13 @@ def main():
         except KeyboardInterrupt:
             trainer.save_model()
 
-    if config_args.to_test:
+    elif config_args.train_or_test == 'test':
         print("Final test!")
         # trainer.test()
         print("Testing Finished\n\n")
+
+    else:
+        raise ValueError("Train or Test options only are allowed")
 
 
 if __name__ == '__main__':

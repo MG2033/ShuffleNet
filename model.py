@@ -27,14 +27,15 @@ class ShuffleNet:
         self.__build()
 
     def __init_input(self):
+        batch_size = self.args.batch_size if self.args.train_or_test == 'train' else 1
         with tf.variable_scope('input'):
             # Input images
             self.X = tf.placeholder(tf.float32,
-                                    [self.args.batch_size, self.args.img_height, self.args.img_width,
+                                    [batch_size, self.args.img_height, self.args.img_width,
                                      self.args.num_channels])
             # Classification supervision, it's an argmax. Feel free to change it to one-hot,
             # but don't forget to change the loss from sparse as well
-            self.y = tf.placeholder(tf.int32, [self.args.batch_size])
+            self.y = tf.placeholder(tf.int32, [batch_size])
             # is_training is for batch normalization and dropout, if they exist
             self.is_training = tf.placeholder(tf.bool)
 

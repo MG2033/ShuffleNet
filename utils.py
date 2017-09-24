@@ -2,6 +2,7 @@ from bunch import Bunch
 import json
 import argparse
 import os
+import tensorflow as tf
 
 
 def parse_args():
@@ -51,3 +52,10 @@ def create_experiment_dirs(exp_dir):
     except Exception as err:
         print("Creating directories error: {0}".format(err))
         exit(-1)
+
+def calc_flops():
+    # Print to stdout an analysis of the number of floating point operations in the
+    # model broken down by individual operations.
+    tf.profiler.profile(
+        tf.get_default_graph(),
+        options=tf.profiler.ProfileOptionBuilder.float_operation(), cmd='scope')
