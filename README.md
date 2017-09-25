@@ -10,7 +10,7 @@ Link to the original paper: [ShuffleNet: An Extremely Efficient Convolutional Ne
 </div>
 
 ### Group Convolutions
-The paper uses the group convolution operator. However, that operator is not implemented in TensorFlow backend. So, I implemented the operator using graph operations. Despite the fact that this is the same operator as the one in the paper, it lead to slower performance than the regular convolution. So, to get the same performance stated in the paper, CuDNN efficient implementation for the operator should be done. """CALL FOR CONTIBUTION"""
+The paper uses the group convolution operator. However, that operator is not implemented in TensorFlow backend. So, I implemented the operator using graph operations. Despite the fact that this is the same operator as the one stated in the paper, it lead to slower performance than the regular convolution. So, to get the same performance stated in the paper, CuDNN efficient implementation for the operator should be done. """CALL FOR CONTIBUTION"""
 
 ## Channel Shuffling
 <div align="center">
