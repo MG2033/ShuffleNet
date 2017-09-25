@@ -46,6 +46,8 @@ def main():
 
     if config_args.train_or_test == 'train':
         try:
+            print("FLOPs for batch size = " + str(config_args.batch_size) + "\n")
+            calculate_flops()
             print("Training...")
             trainer.train()
             print("Training Finished\n\n")
@@ -53,9 +55,10 @@ def main():
             trainer.save_model()
 
     elif config_args.train_or_test == 'test':
-        print("Final test!")
+        print("FLOPs for single inference \n")
         calculate_flops()
         # This can be 'val' or 'test' or even 'train' according to the needs.
+        print("Testing...")
         trainer.test('val')
         print("Testing Finished\n\n")
 
