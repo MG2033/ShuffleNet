@@ -31,3 +31,12 @@ The paper uses the group convolution operator. However, that operator is not imp
 
     Note that: The number of channels should be divisible by the number of groups.
 
+## Usage
+### Train and Test
+1. Prepare your data, and modify the data_loader.py/DataLoader/load_data() method.
+2. Modify the config/test.json to meet your needs.
+
+### Run
+```
+python main.py config/test.json
+```
