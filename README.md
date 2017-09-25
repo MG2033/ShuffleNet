@@ -54,5 +54,5 @@ python main.py config/test.json
 This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
 
 ## Acknowledgments
-Thanks to all who helped me in my work and special thanks to my colleagues: [Mo'men Mohamed](https://github.com/moemen95), and Mohamed Zahran.
+Thanks for all who helped me in my work and special thanks for my colleagues: [Mo'men Mohamed](https://github.com/moemen95), and Mohamed Zahran.
 
