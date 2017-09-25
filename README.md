@@ -9,6 +9,9 @@ Link to the original paper: [ShuffleNet: An Extremely Efficient Convolutional Ne
 <img src="https://github.com/MG2033/ShuffleNet/blob/master/figures/unit.PNG"><br><br>
 </div>
 
+###Group Convolutions
+The paper uses the group convolution operator. However, that operator is not implemented in TensorFlow backend. So, I implemented the operator using graph operations. Despite the fact that this is the same operator as the one in the paper, it lead to slower performance than the regular convolution. So, to get the same performance stated in the paper, CuDNN efficient implementation for the operator should be done. """CALL FOR CONTIBUTION"""
+
 ## Channel Shuffling
 <div align="center">
 <img src="https://github.com/MG2033/ShuffleNet/blob/master/figures/shuffle.PNG"><br><br>
@@ -27,3 +30,4 @@ Link to the original paper: [ShuffleNet: An Extremely Efficient Convolutional Ne
     C': Number of channels / Number of groups
 
     Note that: The number of channels should be divisible by the number of groups.
+
