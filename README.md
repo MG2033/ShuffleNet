@@ -14,7 +14,7 @@ Link to the original paper: [ShuffleNet: An Extremely Efficient Convolutional Ne
 <img src="https://github.com/MG2033/ShuffleNet/blob/master/figures/shuffle.PNG"><br><br>
 </div>
 
-### Channel Shuffling can be achieved by three operations:
+### Channel Shuffling can be achieved by applying three operations:
 1. Reshaping the input tensor from (N, H, W, C) into (N, H, W, G, C').
 2. Performing matrix transpose operation on the two dimensions (G, C').
 3. Reshaping the tensor back into (N, H, W, C). 
