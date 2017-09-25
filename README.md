@@ -19,11 +19,11 @@ Link to the original paper: [ShuffleNet: An Extremely Efficient Convolutional Ne
 2. Performing matrix transpose operation on the two dimensions (G, C').
 3. Reshaping the tensor back into (N, H, W, C). 
 
-N: Batch size
-H: Feature map height
-W: Feature map width
-C: Number of channels
-G: Number of groups
-C': Number of channels / Number of groups
+    N: Batch size,
+    H: Feature map height,
+    W: Feature map width,
+    C: Number of channels,
+    G: Number of groups,
+    C': Number of channels / Number of groups
 
-Note that: The number of channels should be divisible by the number of groups.
+    Note that: The number of channels should be divisible by the number of groups.

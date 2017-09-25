@@ -4,3 +4,4 @@ data/
 prepare_data.py
 floyd_requirements.txt
 .floyd*
+__pycache__/
