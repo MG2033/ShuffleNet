@@ -4,6 +4,7 @@ some error percentage at much lower FLOPs.
 
 Link to the original paper: [ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices](https://arxiv.org/abs/1707.01083)
 
+
 ## ShuffleNet Unit
 <div align="center">
 <img src="https://github.com/MG2033/ShuffleNet/blob/master/figures/unit.PNG"><br><br>
@@ -56,3 +57,7 @@ This project is licensed under the Apache License 2.0 - see the LICENSE file for
 ## Acknowledgments
 Thanks for all who helped me in my work and special thanks for my colleagues: [Mo'men Mohamed](https://github.com/moemen95), and Mohamed Zahran.
 
+## TODO
+1. Training on ImageNet dataset """CALL FOR CONTRIBUTION"""
+2. Group Convolution in CuDNN
+3. Benchmarking the complexity of the model.
