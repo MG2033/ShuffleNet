@@ -33,6 +33,14 @@ This issue was discussed here: [Support Channel groups in convolutional layers #
     Note that: The number of channels should be divisible by the number of groups.
 
 ## Usage
+### Main Dependencies
+ ```
+ tensorflow 1.3.0
+ numpy 1.13.1
+ tqdm 4.15.0
+ bunch 1.0.1
+ matplotlib 2.0.2
+ ```
 ### Train and Test
 1. Prepare your data, and modify the data_loader.py/DataLoader/load_data() method.
 2. Modify the config/test.json to meet your needs.
@@ -41,3 +49,10 @@ This issue was discussed here: [Support Channel groups in convolutional layers #
 ```
 python main.py config/test.json
 ```
+
+## License
+This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
+
+## Acknowledgments
+Thanks to all who helped me in my work and special thanks to my colleagues: [Mo'men Mohamed](https://github.com/moemen95), and Mohamed Zahran.
+
