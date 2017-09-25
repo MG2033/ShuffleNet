@@ -6,5 +6,5 @@ Link to the original paper: [ShuffleNet: An Extremely Efficient Convolutional Ne
 
 ## ShuffleNet Unit
 <div align="center">
-<img src="figures/dwl_pwl.png"><br><br>
+<img src="https://github.com/MG2033/ShuffleNet/blob/master/figures/unit.PNG"><br><br>
 </div>
