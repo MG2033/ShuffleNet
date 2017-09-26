@@ -51,8 +51,11 @@ This issue was discussed here: [Support Channel groups in convolutional layers #
 python main.py config/test.json
 ```
 
-## TODO
-* Training on ImageNet dataset """CALL FOR CONTRIBUTION"""
+## Results
+The model have successfully overfitted TinyImageNet-200 that was presented in [CS231n - Convolutional Neural Networks for Visual Recognition](https://tiny-imagenet.herokuapp.com/). I have no resources to train on actual ImageNet dataset.
+
+## TODO (CALL FOR CONTRIBUTION)
+* Training on ImageNet dataset
 * Group Convolution in CuDNN
 * Benchmarking the complexity of the model.
 
