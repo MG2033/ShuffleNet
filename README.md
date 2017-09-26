@@ -55,7 +55,7 @@ python main.py config/test.json
 The model have successfully overfitted TinyImageNet-200 that was presented in [CS231n - Convolutional Neural Networks for Visual Recognition](https://tiny-imagenet.herokuapp.com/). I have no resources to train on actual ImageNet dataset.
 
 ## Benchmarking
-The paper has achieved 140MFLOPs using the vanilla version. Using the group convolution operator implemented in TensorFlow, I have achieved approximately 277MFLOPs.
+The paper has achieved 140 MFLOPs using the vanilla version. Using the group convolution operator implemented in TensorFlow, I have achieved approximately 277 MFLOPs.
 
 To calculate the FLOPs in TensorFlow, make sure to set the batch size equal to 1, and execute the following line when the model is loaded into memory.
 ```
