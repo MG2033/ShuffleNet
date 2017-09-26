@@ -73,5 +73,5 @@ tf.profiler.profile(
 This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
 
 ## Acknowledgments
-Thanks for all who helped me in my work and special thanks for my colleagues: [Mo'men Abdelrazek](https://github.com/moemen95), and Mohamed Zahran.
+Thanks for all who helped me in my work and special thanks for my colleagues: [Mo'men Abdelrazek](https://github.com/moemen95), and [Mohamed Zahran]((https://github.com/moh3th1).
 
