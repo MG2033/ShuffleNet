@@ -69,6 +69,10 @@ tf.profiler.profile(
 * Group Convolution in CuDNN
 * Benchmarking the complexity of the model.
 
+## Updates
+* Working on porting a pretrained ImageNet model to this TensorFlow architecture.
+* Bug fixes within days.
+
 ## License
 This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
 
