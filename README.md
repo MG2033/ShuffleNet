@@ -64,14 +64,11 @@ tf.profiler.profile(
         options=tf.profiler.ProfileOptionBuilder.float_operation(), cmd='scope')
 ```
 
-## TODO (CALL FOR CONTRIBUTION)
-* Training on ImageNet dataset
-* Group Convolution in CuDNN
-* Benchmarking the complexity of the model.
+## TODO
+* Training on ImageNet dataset. In progress...
 
 ## Updates
-* Working on porting a pretrained ImageNet model to this TensorFlow architecture.
-* Bug fixes within days.
+* Inference and training are working properly.
 
 ## License
 This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
