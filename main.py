@@ -1,4 +1,4 @@
-from utils import parse_args, create_experiment_dirs, calculate_flops
+from utils import parse_args, create_experiment_dirs, calculate_flops, show_parameters
 from model import ShuffleNet
 from train import Train
 from data_loader import DataLoader
@@ -39,6 +39,9 @@ def main():
     model = ShuffleNet(config_args)
     print("Model is built successfully\n\n")
 
+    # Parameters visualization
+    show_parameters()
+
     # Summarizer creation
     summarizer = Summarizer(sess, config_args.summary_dir)
     # Train class
@@ -46,8 +49,8 @@ def main():
 
     if config_args.train_or_test == 'train':
         try:
-            print("FLOPs for batch size = " + str(config_args.batch_size) + "\n")
-            calculate_flops()
+            # print("FLOPs for batch size = " + str(config_args.batch_size) + "\n")
+            # calculate_flops()
             print("Training...")
             trainer.train()
             print("Training Finished\n\n")
@@ -55,8 +58,8 @@ def main():
             trainer.save_model()
 
     elif config_args.train_or_test == 'test':
-        print("FLOPs for single inference \n")
-        calculate_flops()
+        # print("FLOPs for single inference \n")
+        # calculate_flops()
         # This can be 'val' or 'test' or even 'train' according to the needs.
         print("Testing...")
         trainer.test('val')

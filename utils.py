@@ -53,9 +53,22 @@ def create_experiment_dirs(exp_dir):
         print("Creating directories error: {0}".format(err))
         exit(-1)
 
+
 def calculate_flops():
     # Print to stdout an analysis of the number of floating point operations in the
     # model broken down by individual operations.
     tf.profiler.profile(
         tf.get_default_graph(),
         options=tf.profiler.ProfileOptionBuilder.float_operation(), cmd='scope')
+
+
+def show_parameters():
+    tf.profiler.profile(
+        tf.get_default_graph(),
+        options=tf.profiler.ProfileOptionBuilder.trainable_variables_parameter(), cmd='scope')
+
+
+def load_obj(filename):
+    import pickle
+    with open(filename, 'rb') as file:
+        return pickle.load(file)

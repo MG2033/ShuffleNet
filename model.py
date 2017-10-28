@@ -44,20 +44,27 @@ class ShuffleNet:
 
     def __stage(self, x, stage=2, repeat=3):
         if 2 <= stage <= 4:
-            stage_layer = shufflenet_unit('stage' + str(stage) + '_0', x=x, w=None, num_groups=self.args.num_groups,
+            stage_layer = shufflenet_unit('stage' + str(stage) + '_0', x=x, w=None,
+                                          num_groups=self.args.num_groups,
                                           group_conv_bottleneck=not (stage == 2),
-                                          num_filters=self.output_channels[str(self.args.num_groups)][stage - 2],
+                                          num_filters=
+                                          self.output_channels[str(self.args.num_groups)][
+                                              stage - 2],
                                           stride=(2, 2),
-                                          fusion='concat', l2_strength=self.args.l2_strength, bias=self.args.bias,
+                                          fusion='concat', l2_strength=self.args.l2_strength,
+                                          bias=self.args.bias,
                                           batchnorm_enabled=self.args.batchnorm_enabled,
                                           is_training=self.is_training)
             for i in range(1, repeat + 1):
-                stage_layer = shufflenet_unit('stage' + str(stage) + '_' + str(i), x=stage_layer, w=None,
+                stage_layer = shufflenet_unit('stage' + str(stage) + '_' + str(i),
+                                              x=stage_layer, w=None,
                                               num_groups=self.args.num_groups,
                                               group_conv_bottleneck=True,
-                                              num_filters=self.output_channels[str(self.args.num_groups)][stage - 2],
+                                              num_filters=self.output_channels[
+                                                  str(self.args.num_groups)][stage - 2],
                                               stride=(1, 1),
-                                              fusion='add', l2_strength=self.args.l2_strength,
+                                              fusion='add',
+                                              l2_strength=self.args.l2_strength,
                                               bias=self.args.bias,
                                               batchnorm_enabled=self.args.batchnorm_enabled,
                                               is_training=self.is_training)
@@ -67,16 +74,23 @@ class ShuffleNet:
 
     def __init_output(self):
         with tf.variable_scope('output'):
+            # Losses
             self.regularization_loss = tf.reduce_sum(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
             self.cross_entropy_loss = tf.reduce_mean(
                 tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logits, labels=self.y, name='loss'))
             self.loss = self.regularization_loss + self.cross_entropy_loss
 
+            # Optimizer
             update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
             with tf.control_dependencies(update_ops):
-                self.train_op = tf.train.AdamOptimizer(learning_rate=self.args.learning_rate).minimize(self.loss)
-            self.y_out_argmax = tf.argmax(tf.nn.softmax(self.logits), axis=-1, output_type=tf.int32)
+                self.optimizer = tf.train.AdamOptimizer(learning_rate=self.args.learning_rate)
+                self.train_op = self.optimizer.minimize(self.loss)
+                # This is for debugging NaNs. Check TensorFlow documentation.
+                self.check_op = tf.add_check_numerics_ops()
 
+            # Output and Metrics
+            self.y_out_softmax = tf.nn.softmax(self.logits)
+            self.y_out_argmax = tf.argmax(self.y_out_softmax, axis=-1, output_type=tf.int32)
             self.accuracy = tf.reduce_mean(tf.cast(tf.equal(self.y, self.y_out_argmax), tf.float32))
 
         with tf.name_scope('train-summary-per-iteration'):
@@ -89,22 +103,26 @@ class ShuffleNet:
         self.__init_global_step()
         self.__init_input()
 
-        x_resized = self.__resize(self.X)
-        conv1 = conv2d('conv1', x=x_resized, w=None, num_filters=self.output_channels['conv1'], kernel_size=(3, 3),
+        # x_resized = self.__resize(self.X)
+        x_padded = tf.pad(self.X, [[0, 0], [1, 1], [1, 1], [0, 0]], "CONSTANT")
+        conv1 = conv2d('conv1', x=x_padded, w=None, num_filters=self.output_channels['conv1'], kernel_size=(3, 3),
                        stride=(2, 2), l2_strength=self.args.l2_strength, bias=self.args.bias,
-                       batchnorm_enabled=self.args.batchnorm_enabled, is_training=self.is_training)
-        conv1_padded = tf.pad(conv1, [[0, 0], [1, 1], [1, 1], [0, 0]], "CONSTANT")
-        max_pool = max_pool_2d(conv1_padded, size=(3, 3), stride=(2, 2), name='max_pool')
+                       batchnorm_enabled=self.args.batchnorm_enabled, is_training=self.is_training,
+                       activation=tf.nn.relu, padding='VALID')
+        padded = tf.pad(conv1, [[0, 0], [0, 1], [0, 1], [0, 0]], "CONSTANT")
+        max_pool = max_pool_2d(padded, size=(3, 3), stride=(2, 2), name='max_pool')
         stage2 = self.__stage(max_pool, stage=2, repeat=3)
         stage3 = self.__stage(stage2, stage=3, repeat=7)
         stage4 = self.__stage(stage3, stage=4, repeat=3)
-        global_pool = avg_pool_2d(stage4, size=(7, 7), stride=(1, 1), name='global_pool')
-        flattened = flatten(global_pool)
+        global_pool = avg_pool_2d(stage4, size=(7, 7), stride=(1, 1), name='global_pool', padding='VALID')
 
-        self.logits = dense('fc', flattened, w=None, output_dim=self.args.num_classes,
-                            l2_strength=self.args.l2_strength,
-                            bias=self.args.bias,
-                            is_training=self.is_training)
+        logits_unflattened = conv2d('fc', global_pool, w=None, num_filters=self.args.num_classes,
+                                    kernel_size=(1, 1),
+                                    l2_strength=self.args.l2_strength,
+                                    bias=self.args.bias,
+                                    is_training=self.is_training)
+        self.logits = flatten(logits_unflattened)
+
         self.__init_output()
 
     def __init_global_epoch(self):

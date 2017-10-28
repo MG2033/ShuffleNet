@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tqdm import tqdm
 import numpy as np
+from utils import load_obj
 
 
 class Train:
@@ -23,13 +24,14 @@ class Train:
         self.__init_model()
 
         # Loading the model checkpoint if exists
+        self.__load_imagenet_weights()
         self.__load_model()
 
     ############################################################################################################
     # Model related methods
     def __init_model(self):
         print("Initializing the model...")
-        self.init = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
+        self.init = tf.group(tf.global_variables_initializer())
         self.sess.run(self.init)
         print("Model initialized\n\n")
 
@@ -50,6 +52,23 @@ class Train:
             print("Checkpoint loaded\n\n")
         else:
             print("First time to train!\n\n")
+
+    def __load_imagenet_weights(self):
+        variables = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
+        try:
+            print("Loading ImageNet pretrained weights...")
+            dict = load_obj(self.args.pretrained_path)
+            run_list = []
+            for variable in variables:
+                for key, value in dict.items():
+                    # Adding ':' means that we are interested in the variable itself and not the variable parameters
+                    # that are used in adaptive optimizers
+                    if key + ":" in variable.name:
+                        run_list.append(tf.assign(variable, value))
+            self.sess.run(run_list)
+            print("Weights loaded\n\n")
+        except KeyboardInterrupt:
+            print("No pretrained ImageNet weights exist. Skipping...\n\n")
 
     ############################################################################################################
     # Train and Test methods
@@ -119,13 +138,12 @@ class Train:
                 cur_iteration += 1
 
             # Save the current checkpoint
-            if cur_epoch % self.args.save_model_every == 0:
+            if cur_epoch % self.args.save_model_every == 0 and cur_epoch != 0:
                 self.save_model()
 
             # Test the model on validation or test data
             if cur_epoch % self.args.test_every == 0:
                 self.test('val')
-                pass
 
     def test(self, test_type='val'):
         num_iterations = self.args.test_data_size // self.args.batch_size
@@ -146,6 +164,7 @@ class Train:
             loss, acc = self.sess.run(
                 [self.model.loss, self.model.accuracy],
                 feed_dict=feed_dict)
+
             # Append loss and accuracy
             loss_list += [loss]
             acc_list += [acc]

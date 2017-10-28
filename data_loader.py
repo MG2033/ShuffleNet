@@ -23,23 +23,33 @@ class DataLoader:
         self.batch_size = batch_size
 
     def load_data(self):
+        # This method is an example of loading a dataset. Change it to suit your needs..
+        import matplotlib.pyplot as plt
         # For going in the same experiment as the paper. Resizing the input image data to 224x224 is done.
-        train_data = np.load("./data/tiny-image-net-200/tiny-image-net-200-train.npz")
-        self.X_train = train_data['arr_0']
-        self.y_train = train_data['arr_1']
-        self.X_mean = np.mean(self.X_train, axis=0)
-        train_data = None
+        train_data = np.array([plt.imread('./data/0.jpg')], dtype=np.float32)
+        self.X_train = train_data
 
-        val_data = np.load("./data/tiny-image-net-200/tiny-image-net-200-val.npz")
-        self.X_val = val_data['arr_0']
-        self.y_val = val_data['arr_1']
-        val_data = None
+        # Subtracting the mean
+        self.X_train[:, :, :, 0] -= 103.94
+        self.X_train[:, :, :, 1] -= 116.78
+        self.X_train[:, :, :, 2] -= 123.68
+        self.X_train *= 0.017
+        self.y_train = np.array([283], dtype=np.int32)
+
+        val_data = np.array([plt.imread('./data/0.jpg')], dtype=np.float32)
+        self.X_val = val_data
+        self.X_val[:, :, :, 0] -= 103.94
+        self.X_val[:, :, :, 1] -= 116.78
+        self.X_val[:, :, :, 2] -= 123.68
+        self.X_val *= 0.017
+
+        self.y_val = np.array([283])
 
         self.train_data_len = self.X_train.shape[0]
         self.val_data_len = self.X_val.shape[0]
-        img_height = self.X_train.shape[1]
-        img_width = self.X_train.shape[2]
-        num_channels = self.X_train.shape[3]
+        img_height = 224
+        img_width = 224
+        num_channels = 3
         return img_height, img_width, num_channels, self.train_data_len, self.val_data_len
 
     def generate_batch(self, type='train'):
@@ -59,7 +69,7 @@ class DataLoader:
                     new_epoch = False
 
                 # Batch mask selection
-                X_batch = self.X_train[mask[start_idx:start_idx + self.batch_size]] - self.X_mean
+                X_batch = self.X_train[mask[start_idx:start_idx + self.batch_size]]
                 y_batch = self.y_train[mask[start_idx:start_idx + self.batch_size]]
                 start_idx += self.batch_size
 
@@ -73,7 +83,7 @@ class DataLoader:
             start_idx = 0
             while True:
                 # Batch mask selection
-                X_batch = self.X_test[start_idx:start_idx + self.batch_size] - self.X_mean
+                X_batch = self.X_test[start_idx:start_idx + self.batch_size]
                 y_batch = self.y_test[start_idx:start_idx + self.batch_size]
                 start_idx += self.batch_size
 
@@ -86,7 +96,7 @@ class DataLoader:
             start_idx = 0
             while True:
                 # Batch mask selection
-                X_batch = self.X_val[start_idx:start_idx + self.batch_size] - self.X_mean
+                X_batch = self.X_val[start_idx:start_idx + self.batch_size]
                 y_batch = self.y_val[start_idx:start_idx + self.batch_size]
                 start_idx += self.batch_size
 

@@ -1,7 +1,11 @@
 .idea/
 experiments/
-data/
 prepare_data.py
 floyd_requirements.txt
 .floyd*
 __pycache__/
+converter.py
+extracted_model/
+checkpoint
+tester.py
+*.pkl
