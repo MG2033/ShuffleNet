@@ -28,21 +28,10 @@ class DataLoader:
         # For going in the same experiment as the paper. Resizing the input image data to 224x224 is done.
         train_data = np.array([plt.imread('./data/0.jpg')], dtype=np.float32)
         self.X_train = train_data
-
-        # Subtracting the mean
-        self.X_train[:, :, :, 0] -= 103.94
-        self.X_train[:, :, :, 1] -= 116.78
-        self.X_train[:, :, :, 2] -= 123.68
-        self.X_train *= 0.017
         self.y_train = np.array([283], dtype=np.int32)
 
         val_data = np.array([plt.imread('./data/0.jpg')], dtype=np.float32)
         self.X_val = val_data
-        self.X_val[:, :, :, 0] -= 103.94
-        self.X_val[:, :, :, 1] -= 116.78
-        self.X_val[:, :, :, 2] -= 123.68
-        self.X_val *= 0.017
-
         self.y_val = np.array([283])
 
         self.train_data_len = self.X_train.shape[0]

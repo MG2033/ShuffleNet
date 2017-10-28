@@ -4,6 +4,8 @@ from layers import shufflenet_unit, conv2d, max_pool_2d, avg_pool_2d, dense, fla
 
 class ShuffleNet:
     """ShuffleNet is implemented here!"""
+    MEAN = [103.94, 116.78, 123.68]
+    NORMALIZER = 0.017
 
     def __init__(self, args):
         self.args = args
@@ -103,8 +105,14 @@ class ShuffleNet:
         self.__init_global_step()
         self.__init_input()
 
-        # x_resized = self.__resize(self.X)
-        x_padded = tf.pad(self.X, [[0, 0], [1, 1], [1, 1], [0, 0]], "CONSTANT")
+        with tf.name_scope('Preprocessing'):
+            red, green, blue = tf.split(self.X, num_or_size_splits=3, axis=3)
+            preprocessed_input = tf.concat([
+                tf.subtract(blue, ShuffleNet.MEAN[0]) * ShuffleNet.NORMALIZER,
+                tf.subtract(green, ShuffleNet.MEAN[1]) * ShuffleNet.NORMALIZER,
+                tf.subtract(red, ShuffleNet.MEAN[2]) * ShuffleNet.NORMALIZER,
+            ], 3)
+        x_padded = tf.pad(preprocessed_input, [[0, 0], [1, 1], [1, 1], [0, 0]], "CONSTANT")
         conv1 = conv2d('conv1', x=x_padded, w=None, num_filters=self.output_channels['conv1'], kernel_size=(3, 3),
                        stride=(2, 2), l2_strength=self.args.l2_strength, bias=self.args.bias,
                        batchnorm_enabled=self.args.batchnorm_enabled, is_training=self.is_training,

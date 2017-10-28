@@ -201,7 +201,7 @@ def shufflenet_unit(name, x, w=None, num_groups=1, group_conv_bottleneck=True, n
                                      padding='VALID', bias=bias,
                                      activation=None, batchnorm_enabled=batchnorm_enabled, is_training=is_training)
         if stride == (2, 2):
-            residual_pooled = avg_pool_2d(residual, size=(3, 3), stride=stride)
+            residual_pooled = avg_pool_2d(residual, size=(3, 3), stride=stride, padding='SAME')
         else:
             residual_pooled = residual
 
@@ -351,7 +351,7 @@ def max_pool_2d(x, size=(2, 2), stride=(2, 2), name='pooling'):
                           name=name)
 
 
-def avg_pool_2d(x, size=(2, 2), stride=(2, 2), name='avg_pooling', padding='SAME'):
+def avg_pool_2d(x, size=(2, 2), stride=(2, 2), name='avg_pooling', padding='VALID'):
     """
         Average pooling 2D Wrapper
         :param x: (tf.tensor) The input to the layer (N,H,W,C).
