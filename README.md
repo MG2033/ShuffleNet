@@ -1,6 +1,6 @@
 # ShuffleNet
 An implementation of `ShuffleNet` introduced in  in TensorFlow. According to the authors, `ShuffleNet` is a computationally efficient CNN architecture designed specifically for mobile devices with very limited computing power. It outperforms `Google MobileNet` by
-some error percentage at much lower FLOPs.
+small error percentage at much lower FLOPs.
 
 Link to the original paper: [ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices](https://arxiv.org/abs/1707.01083)
 
@@ -52,10 +52,10 @@ python main.py config/test.json
 ```
 
 ## Results
-The model have successfully overfitted TinyImageNet-200 that was presented in [CS231n - Convolutional Neural Networks for Visual Recognition](https://tiny-imagenet.herokuapp.com/). I have no resources to train on actual ImageNet dataset.
+The model have successfully overfitted TinyImageNet-200 that was presented in [CS231n - Convolutional Neural Networks for Visual Recognition](https://tiny-imagenet.herokuapp.com/). I'm working on ImageNet training..
 
 ## Benchmarking
-The paper has achieved 140 MFLOPs using the vanilla version. Using the group convolution operator implemented in TensorFlow, I have achieved approximately 277 MFLOPs.
+The paper has achieved 140 MFLOPs using the vanilla version. Using the group convolution operator implemented in TensorFlow, I have achieved approximately 270 MFLOPs.
 
 To calculate the FLOPs in TensorFlow, make sure to set the batch size equal to 1, and execute the following line when the model is loaded into memory.
 ```
@@ -64,14 +64,11 @@ tf.profiler.profile(
         options=tf.profiler.ProfileOptionBuilder.float_operation(), cmd='scope')
 ```
 
-## TODO (CALL FOR CONTRIBUTION)
-* Training on ImageNet dataset
-* Group Convolution in CuDNN
-* Benchmarking the complexity of the model.
+## TODO
+* Training on ImageNet dataset. In progress...
 
 ## Updates
-* Working on porting a pretrained ImageNet model to this TensorFlow architecture.
-* Bug fixes within days.
+* Inference and training are working properly.
 
 ## License
 This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
