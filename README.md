@@ -51,14 +51,31 @@ This issue was discussed here: [Support Channel groups in convolutional layers #
 python main.py config/test.json
 ```
 
-## TODO
-* Training on ImageNet dataset """CALL FOR CONTRIBUTION"""
+## Results
+The model have successfully overfitted TinyImageNet-200 that was presented in [CS231n - Convolutional Neural Networks for Visual Recognition](https://tiny-imagenet.herokuapp.com/). I have no resources to train on actual ImageNet dataset.
+
+## Benchmarking
+The paper has achieved 140 MFLOPs using the vanilla version. Using the group convolution operator implemented in TensorFlow, I have achieved approximately 277 MFLOPs.
+
+To calculate the FLOPs in TensorFlow, make sure to set the batch size equal to 1, and execute the following line when the model is loaded into memory.
+```
+tf.profiler.profile(
+        tf.get_default_graph(),
+        options=tf.profiler.ProfileOptionBuilder.float_operation(), cmd='scope')
+```
+
+## TODO (CALL FOR CONTRIBUTION)
+* Training on ImageNet dataset
 * Group Convolution in CuDNN
 * Benchmarking the complexity of the model.
+
+## Updates
+* Working on porting a pretrained ImageNet model to this TensorFlow architecture.
+* Bug fixes within days.
 
 ## License
 This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
 
 ## Acknowledgments
-Thanks for all who helped me in my work and special thanks for my colleagues: [Mo'men Mohamed](https://github.com/moemen95), and Mohamed Zahran.
+Thanks for all who helped me in my work and special thanks for my colleagues: [Mo'men Abdelrazek](https://github.com/moemen95), and [Mohamed Zahran](https://github.com/moh3th1).
 
