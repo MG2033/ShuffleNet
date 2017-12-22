@@ -11,7 +11,7 @@ Link to the original paper: [ShuffleNet: An Extremely Efficient Convolutional Ne
 </div>
 
 ### Group Convolutions
-The paper uses the group convolution operator. However, that operator is not implemented in TensorFlow backend. So, I implemented the operator using graph operations. Despite the fact that this is the same operator as the one stated in the paper, it lead to slower performance than the regular convolution. So, to get the same performance stated in the paper, CuDNN efficient implementation for the operator should be done. """CALL FOR CONTRIBUTION"""
+The paper uses the group convolution operator. However, that operator is not implemented in TensorFlow backend. So, I implemented the operator using graph operations.
 
 This issue was discussed here: [Support Channel groups in convolutional layers #10482](https://github.com/tensorflow/tensorflow/pull/10482)
 ## Channel Shuffling
@@ -55,7 +55,7 @@ python main.py config/test.json
 The model have successfully overfitted TinyImageNet-200 that was presented in [CS231n - Convolutional Neural Networks for Visual Recognition](https://tiny-imagenet.herokuapp.com/). I'm working on ImageNet training..
 
 ## Benchmarking
-The paper has achieved 140 MFLOPs using the vanilla version. Using the group convolution operator implemented in TensorFlow, I have achieved approximately 270 MFLOPs.
+The paper has achieved 140 MFLOPs using the vanilla version. Using the group convolution operator implemented in TensorFlow, I have achieved approximately 270 MFLOPs. The paper counts multiplication+addition as one unit, so roughly dividing 270 by two, I have achieved what the paper proposes.
 
 To calculate the FLOPs in TensorFlow, make sure to set the batch size equal to 1, and execute the following line when the model is loaded into memory.
 ```
