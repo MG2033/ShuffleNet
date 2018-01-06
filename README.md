@@ -36,6 +36,7 @@ This issue was discussed here: [Support Channel groups in convolutional layers #
 ## Usage
 ### Main Dependencies
  ```
+ Python 3 or above
  tensorflow 1.3.0
  numpy 1.13.1
  tqdm 4.15.0
