@@ -4,8 +4,8 @@ prepare_data.py
 floyd_requirements.txt
 .floyd*
 __pycache__/
-converter.py
 extracted_model/
 checkpoint
 tester.py
+converter.py
 *.pkl
