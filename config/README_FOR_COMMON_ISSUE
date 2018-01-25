@@ -1,0 +1,4 @@
+Please ignore the line "pretrained_path: weights.pkl" in test.json. 
+I used weights.pkl to save/load weights from/into the model.
+Don't worry its presense in the config file is useless now, because of the try-except on this file in train.py.
+When I finish training on ImageNet, I will upload the file immediately.
