@@ -49,7 +49,7 @@ This issue was discussed here: [Support Channel groups in convolutional layers #
 
 ### Run
 ```
-python main.py config/test.json
+python main.py --config config/test.json
 ```
 
 ## Results
